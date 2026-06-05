@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病棟損益分岐点アプリ リーフレット v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=BIZ+UDPGothic:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --ink:     #0D1B2A;
+  --navy:    #1A2E50;
+  --blue:    #1A5276;
+  --blue2:   #2471A3;
+  --accent:  #1A6AA0;
+  --gold:    #B07D10;
+  --gold-lt: #FEF9E7;
+  --green:   #1A7A48;
+  --green2:  #27AE60;
+  --warn:    #B03020;
+  --paper:   #F3F6FA;
+  --rule:    #C0CCE0;
+}
+
+body {
+  font-family: 'BIZ UDPGothic','Noto Sans JP',sans-serif;
+  background: #A0ACBC;
+  color: var(--ink);
+  width: 210mm;
+  margin: 0 auto;
+}
+
+/* ── HEADER ── */
+header { background: var(--navy); position: relative; overflow: hidden; padding: 0; }
+.hdr-stripe {
+  height: 6px;
+  background: linear-gradient(90deg,
+    #1A5276 0% 20%, #2471A3 20% 40%,
+    #B07D10 40% 60%, #1A7A48 60% 80%,
+    #8E44AD 80% 100%
+  );
+}
+.hdr-body {
+  padding: 20px 32px 16px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  position: relative; z-index: 1;
+}
+.hdr-body::before {
+  content: '%';
+  position: absolute; font-size: 280px; font-family: 'Oswald', sans-serif;
+  color: rgba(255,255,255,0.025); right: 10px; top: -60px; line-height: 1;
+  pointer-events: none;
+}
+.hdr-eyebrow { font-family: 'Oswald',sans-serif; font-size: 10px; letter-spacing: 3.5px; color: #7DB8E0; text-transform: uppercase; margin-bottom: 6px; }
+.hdr-title { font-family: 'Noto Sans JP',sans-serif; font-size: 34px; font-weight: 900; color: white; line-height: 1.1; letter-spacing: -1px; }
+.hdr-title span { color: #7DB8E0; }
+.hdr-sub { color: rgba(255,255,255,0.55); font-size: 12px; margin-top: 7px; }
+.hdr-right { text-align: right; flex-shrink: 0; }
+.version-tag { background: var(--accent); color: white; font-family: 'Oswald',sans-serif; font-size: 13px; letter-spacing: 2px; padding: 4px 14px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+.score-badges { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+.score-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); font-size: 10px; padding: 3px 10px; border-radius: 3px; letter-spacing: 0.5px; }
+
+/* ── HERO BAND ── */
+.hero-band { background: var(--accent); padding: 10px 32px; display: flex; align-items: center; gap: 10px; }
+.hero-band-text { font-size: 13px; font-weight: 700; color: white; line-height: 1.5; }
+.hero-band-text strong { font-size: 15px; display: block; }
+.hero-icon { font-size: 26px; flex-shrink: 0; }
+
+/* ── BODY ── */
+.body-wrap { background: var(--paper); padding: 22px 26px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ── COMMON ── */
+.sec-title { font-family: 'Oswald',sans-serif; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--blue); border-bottom: 2px solid var(--blue); padding-bottom: 5px; margin-bottom: 12px; display: flex; align-items: center; gap: 7px; }
+.sec-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+.card { background: white; border-radius: 6px; padding: 14px 16px; box-shadow: 0 1px 8px rgba(13,27,42,0.07), 0 0 0 1px rgba(0,0,0,0.04); }
+
+/* ── TARGET ── */
+.target-wrap { grid-column: 1/3; }
+.target-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.target-item { display: flex; gap: 10px; align-items: flex-start; background: #EAF2FA; border-radius: 6px; padding: 11px 12px; border-left: 4px solid var(--accent); }
+.target-item.b { border-left-color: var(--gold); background: var(--gold-lt); }
+.target-item.c { border-left-color: var(--green); background: #EAF5EE; }
+.t-emoji { font-size: 24px; flex-shrink: 0; line-height: 1; margin-top: 1px; }
+.t-head { font-size: 12.5px; font-weight: 700; color: var(--navy); margin-bottom: 3px; line-height: 1.5; }
+.t-head em { font-style: normal; color: var(--warn); }
+.t-desc { font-size: 10.5px; color: #555; line-height: 1.6; }
+
+/* ── INPUT CARDS (3項目) ── */
+.inputs-wrap { grid-column: 1/3; }
+.inputs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.input-card { border-radius: 8px; padding: 14px 14px; border: 1.5px solid rgba(0,0,0,0.07); }
+.input-card.a { background: #EAF2FA; border-color: var(--accent); }
+.input-card.b { background: var(--gold-lt); border-color: var(--gold); }
+.input-card.c { background: #EAF5EE; border-color: var(--green); }
+.ic-icon { font-size: 22px; margin-bottom: 5px; }
+.ic-num { font-family: 'Oswald',sans-serif; font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.input-card.a .ic-num { color: var(--accent); }
+.input-card.b .ic-num { color: var(--gold); }
+.input-card.c .ic-num { color: var(--green); }
+.ic-label { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.ic-desc { font-size: 10px; color: #555; line-height: 1.6; }
+.ic-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-top: 5px; color: white; }
+.input-card.a .ic-badge { background: var(--accent); }
+.input-card.b .ic-badge { background: var(--gold); }
+.input-card.c .ic-badge { background: var(--green); }
+
+/* OUTPUT ROW */
+.output-row { grid-column: 1/4; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.output-box { border-radius: 6px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+.output-box.bep { background: var(--navy); }
+.output-box.tgt { background: var(--green); }
+.ob-icon { font-size: 28px; flex-shrink: 0; }
+.ob-label { font-size: 9px; margin-bottom: 2px; font-family: 'Oswald',sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+.output-box.bep .ob-label { color: rgba(255,255,255,0.6); }
+.output-box.tgt .ob-label { color: rgba(255,255,255,0.75); }
+.ob-val { font-family: 'Oswald',sans-serif; font-size: 26px; font-weight: 700; color: white; line-height: 1; }
+.ob-val span { font-size: 13px; font-family: 'Noto Sans JP',sans-serif; }
+.ob-sub { font-size: 9px; margin-top: 3px; }
+.output-box.bep .ob-sub { color: rgba(255,255,255,0.5); }
+.output-box.tgt .ob-sub { color: rgba(255,255,255,0.7); }
+
+/* ── FIXED COST ── */
+.fixedcost-wrap { grid-column: 1/2; }
+.fc-list { display: flex; flex-direction: column; gap: 5px; }
+.fc-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 5px; }
+.fc-item:nth-child(1) { background: #EAF2FA; border-left: 3px solid var(--accent); }
+.fc-item:nth-child(2) { background: var(--gold-lt); border-left: 3px solid var(--gold); }
+.fc-item:nth-child(3) { background: #EAF5EE; border-left: 3px solid var(--green); }
+.fc-item:nth-child(4) { background: #F4EEF8; border-left: 3px solid #6A3A9A; }
+.fc-item:nth-child(5) { background: #FEF0EE; border-left: 3px solid var(--warn); }
+.fc-icon { font-size: 16px; flex-shrink: 0; }
+.fc-label { flex: 1; font-size: 11px; font-weight: 700; color: var(--navy); }
+.fc-pct { font-size: 10px; color: #888; white-space: nowrap; }
+.fc-add-note { margin-top: 8px; background: #EAF2FA; border-radius: 5px; padding: 8px 12px; font-size: 10px; color: #444; line-height: 1.7; border-left: 3px solid var(--blue2); }
+
+/* ── FEATURES ── */
+.features-wrap { grid-column: 2/3; }
+.feat-list { display: flex; flex-direction: column; gap: 8px; }
+.feat { display: flex; gap: 10px; align-items: flex-start; padding: 9px 11px; background: #F0F4FA; border-radius: 5px; border-left: 3px solid var(--accent); }
+.feat.gold { border-left-color: var(--gold); background: var(--gold-lt); }
+.feat.green { border-left-color: var(--green); background: #EAF5EE; }
+.feat.purple { border-left-color: #6A3A9A; background: #F4EEF8; }
+.feat-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+.feat-title { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+.feat-desc { font-size: 10px; color: #555; line-height: 1.6; }
+
+/* ── HINT BOX ── */
+.hint-wrap { grid-column: 1/3; }
+.hint-box { background: #EAF2FA; border-radius: 6px; padding: 13px 18px; border-left: 5px solid var(--blue2); }
+.hint-head { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.hint-text { font-size: 11px; color: #333; line-height: 1.85; }
+.hint-text strong { color: var(--accent); }
+
+/* ── FLOW ── */
+.flow-wrap { grid-column: 1/3; }
+.flow-steps { display: grid; grid-template-columns: repeat(5,1fr); gap: 0; position: relative; }
+.flow-steps::before { content: ''; position: absolute; top: 19px; left: calc(10% + 14px); right: calc(10% + 14px); height: 2px; background: repeating-linear-gradient(90deg, var(--rule) 0 6px, transparent 6px 10px); }
+.flow-step { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 5px; }
+.flow-num { width: 38px; height: 38px; border-radius: 50%; color: white; font-family: 'Oswald',sans-serif; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; z-index: 1; margin-bottom: 6px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+.fn1 { background: var(--navy); }
+.fn2 { background: var(--accent); }
+.fn3 { background: var(--gold); }
+.fn4 { background: var(--green); }
+.fn5 { background: #6A3A9A; }
+.flow-emoji { font-size: 16px; margin-bottom: 3px; }
+.flow-title { font-size: 11px; font-weight: 700; color: var(--navy); margin-bottom: 2px; line-height: 1.35; }
+.flow-desc { font-size: 9.5px; color: #666; line-height: 1.5; }
+
+/* ── BOTTOM ROW ── */
+.bottom-row { grid-column: 1/3; display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; }
+
+/* ── MOCK ── */
+.mock-screens { display: flex; gap: 10px; padding: 12px; background: #C0CCE0; border-radius: 6px; }
+.phone { flex: 1; background: white; border-radius: 10px; border: 1.5px solid #A0B0C8; overflow: hidden; box-shadow: 0 5px 16px rgba(0,0,0,0.13); }
+.phone-hdr { background: var(--navy); padding: 5px 8px; display: flex; justify-content: space-between; align-items: center; font-size: 7.5px; font-weight: 700; color: white; }
+.phone-hdr .ver { color: rgba(255,255,255,0.45); }
+.phone-title-bar { background: var(--accent); padding: 5px 8px; text-align: center; font-size: 8px; font-weight: 700; color: white; letter-spacing: 1px; }
+.phone-body { padding: 8px 7px; }
+.p-label { font-size: 7px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.p-input { background: #F0F4FA; border: 1px solid #C0CCE0; border-radius: 4px; padding: 4px 6px; font-size: 7px; color: var(--ink); margin-bottom: 4px; display: flex; justify-content: space-between; }
+
+/* results */
+.p-result-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 5px; }
+.p-kpi { border-radius: 5px; padding: 7px 8px; text-align: center; }
+.p-kpi.bep { background: var(--navy); }
+.p-kpi.tgt { background: var(--green); }
+.p-kpi-lbl { font-size: 6.5px; margin-bottom: 2px; font-family: 'Oswald',sans-serif; letter-spacing: 0.5px; }
+.p-kpi.bep .p-kpi-lbl { color: rgba(255,255,255,0.6); }
+.p-kpi.tgt .p-kpi-lbl { color: rgba(255,255,255,0.75); }
+.p-kpi-val { font-size: 15px; font-weight: 900; color: white; font-family: 'Oswald',sans-serif; line-height: 1; }
+.p-kpi-unit { font-size: 6.5px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+
+/* chart */
+.p-chart-wrap { background: #F0F4FA; border-radius: 5px; padding: 6px; margin-top: 5px; }
+.p-chart-lbl { font-size: 6.5px; color: #777; margin-bottom: 4px; }
+.p-bar-row { display: flex; gap: 2px; align-items: flex-end; height: 40px; }
+.p-bar { flex: 1; border-radius: 2px 2px 0 0; }
+.p-bar-lbls { display: flex; gap: 2px; margin-top: 2px; }
+.p-bar-l { flex: 1; font-size: 5.5px; text-align: center; color: #888; }
+.p-bep-note { font-size: 6.5px; font-weight: 700; color: var(--warn); text-align: center; margin-top: 3px; border-top: 1.5px dashed var(--warn); padding-top: 2px; }
+
+/* fixed cost detail mock */
+.p-fc-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 4px; }
+.p-fc-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 7px; border-radius: 4px; font-size: 7px; }
+.p-fc-item:nth-child(1) { background: #EAF2FA; }
+.p-fc-item:nth-child(2) { background: var(--gold-lt); }
+.p-fc-item:nth-child(3) { background: #EAF5EE; }
+.p-fc-item:nth-child(4) { background: #F4EEF8; }
+.p-fc-lbl { font-weight: 700; color: var(--navy); }
+.p-fc-val { color: var(--accent); font-weight: 700; font-family: 'Oswald',sans-serif; font-size: 8px; }
+.p-fc-total { display: flex; justify-content: space-between; align-items: center; padding: 5px 7px; background: var(--navy); border-radius: 4px; }
+.p-fc-total-lbl { font-size: 7px; color: rgba(255,255,255,0.7); font-weight: 700; }
+.p-fc-total-val { font-size: 10px; color: #7DB8E0; font-weight: 900; font-family: 'Oswald',sans-serif; }
+.p-hint { background: #EAF2FA; border-radius: 4px; padding: 6px 7px; margin-top: 5px; font-size: 6.5px; color: #333; line-height: 1.7; border-left: 2.5px solid var(--blue2); }
+.p-hint strong { color: var(--accent); }
+
+/* ── PRICING ── */
+.pricing-card { background: var(--navy); color: white; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(18,41,74,0.3); }
+.pricing-top { padding: 16px 18px 12px; position: relative; overflow: hidden; flex: 1; }
+.pricing-top::after { content: '%'; position: absolute; right: 5px; top: -5px; font-size: 110px; font-family: 'Oswald',sans-serif; color: rgba(255,255,255,0.04); font-weight: 700; line-height: 1; pointer-events: none; }
+.plan-eyebrow { font-family: 'Oswald',sans-serif; font-size: 10px; letter-spacing: 2.5px; color: #7DB8E0; margin-bottom: 7px; }
+.plan-name { font-size: 19px; font-weight: 900; line-height: 1.25; margin-bottom: 10px; }
+.plan-name span { color: #7DB8E0; }
+.free-box { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 5px; padding: 8px 11px; margin-bottom: 10px; }
+.free-label { font-size: 9px; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+.free-val { font-size: 12.5px; font-weight: 700; }
+.free-limit { font-size: 9px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+.scene-box { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 5px; padding: 10px 11px; margin-bottom: 10px; }
+.scene-label { font-size: 9px; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
+.plan-perks { display: flex; flex-direction: column; gap: 5px; }
+.perk { display: flex; align-items: flex-start; gap: 7px; font-size: 10.5px; color: rgba(255,255,255,0.85); }
+.perk::before { content: '✓'; color: #7DB8E0; font-weight: 700; flex-shrink: 0; }
+.pricing-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding: 12px 18px; display: flex; gap: 12px; align-items: center; }
+.qr-canvas-wrap { width: 64px; height: 64px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 4px; }
+#qr-byoto canvas, #qr-byoto img { width: 56px !important; height: 56px !important; }
+.qr-info { display: flex; flex-direction: column; justify-content: center; }
+.qr-label { font-size: 9px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.qr-scan-link { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: white; text-decoration: none; padding: 8px 13px; border-radius: 5px; margin-bottom: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+.qr-scan-icon { font-size: 17px; line-height: 1; }
+.qr-scan-text { font-size: 12.5px; font-weight: 700; color: white; }
+.qr-arrow { font-size: 13px; opacity: 0.75; color: white; }
+.qr-note { font-size: 9px; color: rgba(255,255,255,0.35); }
+
+footer { background: var(--ink); color: rgba(255,255,255,0.4); font-size: 9px; text-align: center; padding: 7px 24px; line-height: 1.7; }
+footer strong { color: rgba(255,255,255,0.7); }
+@media print { body { width: 210mm; margin: 0; } }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="hdr-stripe"></div>
+  <div class="hdr-body">
+    <div>
+      <div class="hdr-eyebrow">Hospital Ward BEP Simulation App</div>
+      <div class="hdr-title">病棟<span>損益分岐点アプリ</span></div>
+      <div class="hdr-sub">病床数・平均入院単価・固定費を入力するだけ。BEP稼働率と目標利益達成ラインを即算出。数値で経営提案できる師長・管理者へ。</div>
+    </div>
+    <div class="hdr-right">
+      <div class="version-tag">BEP SIMULATOR</div>
+      <div class="score-badges">
+        <span class="score-badge">損益分岐点 稼働率 算出</span>
+        <span class="score-badge">目標利益率 達成ライン算出</span>
+        <span class="score-badge">固定費 詳細内訳 管理</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO BAND -->
+<div class="hero-band">
+  <div class="hero-icon">📊</div>
+  <div class="hero-band-text">
+    <strong>「人を増やしたい」その要求に、数字で根拠を添える。稼働率〇%上げれば人件費を捻出できる ─ それを証明するツール。</strong>
+    病棟師長・看護部長・病院管理者 ／ 増員・予算交渉をしたい方 ／ 経営数値を学びたい中堅看護師まで
+  </div>
+</div>
+
+<div class="body-wrap">
+
+  <!-- TARGET -->
+  <div class="target-wrap">
+    <div class="card">
+      <div class="sec-title"><span class="dot"></span>こんな方におすすめ ─ 3つのシーン</div>
+      <div class="target-grid">
+        <div class="target-item">
+          <div class="t-emoji">💬</div>
+          <div>
+            <div class="t-head">増員・予算交渉で<em>数値の根拠がない…</em></div>
+            <div class="t-desc">「安全のために人を増やしたい」その主張に数字を添えられます。「稼働率をあと〇%上げれば人件費を捻出できる」という提案が可能に。</div>
+          </div>
+        </div>
+        <div class="target-item b">
+          <div class="t-emoji">📉</div>
+          <div>
+            <div class="t-head">病床稼働率の低下が<em>経営にどう影響するか見えない…</em></div>
+            <div class="t-desc">損益分岐稼働率・目標利益達成稼働率の2つの指標で「黒字化ライン」「利益目標ライン」を同時に把握。経営の全体像が一目でわかります。</div>
+          </div>
+        </div>
+        <div class="target-item c">
+          <div class="t-emoji">📚</div>
+          <div>
+            <div class="t-head">経営数値を理解して<em>現場から提案できる管理者になりたい</em></div>
+            <div class="t-desc">固定費の内訳を項目別に可視化し、【悠の視点】で経営提案の言語化まで支援。使いながら病棟経営の思考回路が身につきます。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT CARDS -->
+  <div class="inputs-wrap">
+    <div class="card">
+      <div class="sec-title"><span class="dot"></span>3つの入力 → 2つの経営指標を即算出</div>
+      <div class="inputs-grid">
+        <div class="input-card a">
+          <div class="ic-icon">🏥</div>
+          <div class="ic-num">①</div>
+          <div class="ic-label">病床数（床）</div>
+          <div class="ic-desc">病棟の稼働可能な総病床数。稼働率計算の母数になります。</div>
+          <div class="ic-badge">例：50床</div>
+        </div>
+        <div class="input-card b">
+          <div class="ic-icon">💴</div>
+          <div class="ic-num">②</div>
+          <div class="ic-label">平均入院単価（円/日）</div>
+          <div class="ic-desc">1患者1日あたりの平均診療報酬。DPC・包括等を考慮して設定。</div>
+          <div class="ic-badge">例：45,000円/日</div>
+        </div>
+        <div class="input-card c">
+          <div class="ic-icon">💰</div>
+          <div class="ic-num">③</div>
+          <div class="ic-label">月間固定費（万円）</div>
+          <div class="ic-desc">⚙️ボタンで人件費・光熱費・リース料など詳細内訳を項目別に入力・管理できます。</div>
+          <div class="ic-badge">⚙️ 詳細内訳管理対応</div>
+        </div>
+        <div class="output-row">
+          <div class="output-box bep">
+            <div class="ob-icon">📊</div>
+            <div>
+              <div class="ob-label">OUTPUT ① 損益分岐点 稼働率</div>
+              <div class="ob-val">〇〇 <span>%</span></div>
+              <div class="ob-sub">この稼働率を超えると黒字になります</div>
+            </div>
+          </div>
+          <div class="output-box tgt">
+            <div class="ob-icon">🎯</div>
+            <div>
+              <div class="ob-label">OUTPUT ② 目標利益率（10%）達成</div>
+              <div class="ob-val">〇〇 <span>%</span></div>
+              <div class="ob-sub">目標利益率を達成する稼働率ライン</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIXED COST -->
+  <div class="fixedcost-wrap">
+    <div class="card">
+      <div class="sec-title"><span class="dot"></span>⚙️ 固定費の詳細内訳を項目別に管理</div>
+      <div class="fc-list">
+        <div class="fc-item">
+          <div class="fc-icon">👥</div>
+          <div class="fc-label">人件費（看護師・医師・コメディカル等）</div>
+          <div class="fc-pct">約60〜70%</div>
+        </div>
+        <div class="fc-item">
+          <div class="fc-icon">🏢</div>
+          <div class="fc-label">施設維持費・建物関連費用</div>
+          <div class="fc-pct">約10〜15%</div>
+        </div>
+        <div class="fc-item">
+          <div class="fc-icon">💡</div>
+          <div class="fc-label">光熱費・通信費</div>
+          <div class="fc-pct">約5〜8%</div>
+        </div>
+        <div class="fc-item">
+          <div class="fc-icon">🛒</div>
+          <div class="fc-label">医療機器・消耗品リース料</div>
+          <div class="fc-pct">約5〜8%</div>
+        </div>
+        <div class="fc-item">
+          <div class="fc-icon">➕</div>
+          <div class="fc-label">その他（独自項目を追加可能）</div>
+          <div class="fc-pct">カスタム</div>
+        </div>
+      </div>
+      <div class="fc-add-note">
+        ⚙️ボタンから各項目の金額を入力すると合計が自動連動。<br>
+        どの経費が損益分岐点に影響しているかを細かく把握できます。
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features-wrap">
+    <div class="card">
+      <div class="sec-title"><span class="dot"></span>主な機能・特徴</div>
+      <div class="feat-list">
+        <div class="feat">
+          <div class="feat-icon">⚡</div>
+          <div>
+            <div class="feat-title">3項目入力でBEP稼働率を即算出</div>
+            <div class="feat-desc">病床数・平均入院単価・月間固定費を入力するだけ。損益分岐点稼働率と必要入院患者数がリアルタイムで表示。</div>
+          </div>
+        </div>
+        <div class="feat green">
+          <div class="feat-icon">🎯</div>
+          <div>
+            <div class="feat-title">目標利益率の達成稼働率を同時表示</div>
+            <div class="feat-desc">損益分岐点（黒字化ライン）に加え、目標利益率（デフォルト10%）を達成するための稼働率ラインも同時に算出。</div>
+          </div>
+        </div>
+        <div class="feat gold">
+          <div class="feat-icon">⚙️</div>
+          <div>
+            <div class="feat-title">固定費の詳細内訳をカスタマイズ管理</div>
+            <div class="feat-desc">人件費・光熱費・リース料など項目別に詳細入力。独自項目の追加も可能。どの費用が損益に影響するかを分析できます。</div>
+          </div>
+        </div>
+        <div class="feat purple">
+          <div class="feat-icon">💡</div>
+          <div>
+            <div class="feat-title">【悠の視点】で経営提案の言語化を支援</div>
+            <div class="feat-desc">算出された数値をどう経営提案に使うかを具体的な言い回しとともに提示。現場管理者の発言力を高めます。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HINT -->
+  <div class="hint-wrap">
+    <div class="card">
+      <div class="sec-title"><span class="dot"></span>💡 悠の視点 ─ 数値を経営提案に変える発想</div>
+      <div class="hint-box">
+        <div class="hint-head">📢 「安全のための増員」を数字で語る</div>
+        <div class="hint-text">
+          損益分岐点稼働率が算出されたら、こう考えてみましょう。<br>
+          <strong>「現在の稼働率〇〇%に対し、損益分岐点は△△%。あとX%稼働率を上げると月間Y万円の収益増になり、看護師Z名分の人件費を捻出できます。さらに目標利益率10%を達成するには稼働率□□%が必要です。」</strong><br>
+          この一言が、現場の声を経営会議で通る「提案」に変えます。2つの指標を持つことで、交渉の幅が広がります。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow-wrap">
+    <div class="card">
+      <div class="sec-title"><span class="dot"></span>使い方 ─ 簡単５ステップ</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-num fn1">1</div>
+          <div class="flow-emoji">🏥</div>
+          <div class="flow-title">病床数を入力</div>
+          <div class="flow-desc">稼働可能な総病床数を設定</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num fn2">2</div>
+          <div class="flow-emoji">💴</div>
+          <div class="flow-title">平均入院<br>単価を入力</div>
+          <div class="flow-desc">1患者1日の平均診療報酬</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num fn3">3</div>
+          <div class="flow-emoji">⚙️</div>
+          <div class="flow-title">固定費を<br>内訳別に入力</div>
+          <div class="flow-desc">人件費・光熱費など項目別管理</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num fn4">4</div>
+          <div class="flow-emoji">📊</div>
+          <div class="flow-title">BEP・目標<br>稼働率を確認</div>
+          <div class="flow-desc">2つの経営指標が即座に表示</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num fn5">5</div>
+          <div class="flow-emoji">📢</div>
+          <div class="flow-title">経営提案・<br>目標設定に活用</div>
+          <div class="flow-desc">悠の視点で提案の言葉に変換</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+
+    <!-- MOCK SCREENS -->
+    <div class="card">
+      <div class="sec-title"><span class="dot"></span>アプリ画面プレビュー</div>
+      <div class="mock-screens">
+
+        <!-- Screen A: メイン計算 -->
+        <div class="phone">
+          <div class="phone-hdr"><span>📊 病棟損益分岐点アプリ</span><span class="ver">BEP</span></div>
+          <div class="phone-title-bar">病棟経営損益分岐点（BEP）</div>
+          <div class="phone-body">
+            <div class="p-label">① 病床数（床）</div>
+            <div class="p-input"><span>50 床</span></div>
+            <div class="p-label">② 平均入院単価（円/日）</div>
+            <div class="p-input"><span>45,000 円/日</span></div>
+            <div class="p-label">③ 月間固定費（万円） ⚙️</div>
+            <div class="p-input"><span>4,500 万円/月</span></div>
+            <div class="p-result-row">
+              <div class="p-kpi bep">
+                <div class="p-kpi-lbl">📊 損益分岐点 稼働率</div>
+                <div class="p-kpi-val">65.2<span style="font-size:7px;font-family:'BIZ UDPGothic'"> %</span></div>
+                <div class="p-kpi-unit">必要患者：32.6 名/日</div>
+              </div>
+              <div class="p-kpi tgt">
+                <div class="p-kpi-lbl">🎯 目標利益（10%）達成</div>
+                <div class="p-kpi-val">71.7<span style="font-size:7px;font-family:'BIZ UDPGothic'"> %</span></div>
+                <div class="p-kpi-unit">必要患者：35.9 名/日</div>
+              </div>
+            </div>
+            <div class="p-chart-wrap">
+              <div class="p-chart-lbl">稼働率別 月間収益シミュレーション</div>
+              <div class="p-bar-row">
+                <div class="p-bar" style="height:10px;background:#B0C0D8;"></div>
+                <div class="p-bar" style="height:18px;background:#B0C0D8;"></div>
+                <div class="p-bar" style="height:26px;background:#1A6AA0;"></div>
+                <div class="p-bar" style="height:32px;background:#1A7A48;"></div>
+                <div class="p-bar" style="height:38px;background:#B07D10;"></div>
+                <div class="p-bar" style="height:40px;background:#6A3A9A;"></div>
+              </div>
+              <div class="p-bar-lbls">
+                <div class="p-bar-l">50%</div>
+                <div class="p-bar-l">60%</div>
+                <div class="p-bar-l">65%</div>
+                <div class="p-bar-l">72%</div>
+                <div class="p-bar-l">80%</div>
+                <div class="p-bar-l">90%</div>
+              </div>
+              <div class="p-bep-note">▲ BEP：65.2% ／ 目標10%利益達成：71.7%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen B: 固定費内訳 -->
+        <div class="phone">
+          <div class="phone-hdr"><span>⚙️ 固定費 詳細内訳管理</span><span class="ver">設定</span></div>
+          <div class="phone-body" style="padding-top:9px;">
+            <div class="p-label" style="margin-bottom:5px;">固定費の内訳（月額／万円）</div>
+            <div class="p-fc-list">
+              <div class="p-fc-item"><span class="p-fc-lbl">👥 人件費（看護師・医師等）</span><span class="p-fc-val">3,100万</span></div>
+              <div class="p-fc-item"><span class="p-fc-lbl">🏢 施設維持費・建物費用</span><span class="p-fc-val">600万</span></div>
+              <div class="p-fc-item"><span class="p-fc-lbl">💡 光熱費・通信費</span><span class="p-fc-val">400万</span></div>
+              <div class="p-fc-item"><span class="p-fc-lbl">🛒 医療機器・消耗品</span><span class="p-fc-val">400万</span></div>
+            </div>
+            <div class="p-fc-total"><span class="p-fc-total-lbl">内訳合計</span><span class="p-fc-total-val">4,500 万円/月</span></div>
+            <div style="margin-top:5px;background:#EAF5EE;border-radius:4px;padding:5px 7px;font-size:6.5px;color:#333;border-left:2.5px solid var(--green2);">
+              目標利益率設定 <strong style="color:var(--green);">10 %</strong>
+            </div>
+            <div class="p-hint">
+              <strong>悠の視点：</strong>人件費が固定費の69%を占めています。稼働率を65.2%→71.7%に改善するだけで目標利益を達成。「稼働率+6.5%＝看護師約2名分の人件費捻出」という提案が可能です。
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PRICING -->
+    <div class="pricing-card">
+      <div class="pricing-top">
+        <div class="plan-eyebrow">FREE TO USE</div>
+        <div class="plan-name"><span>完全無料</span>で<br>全機能を使える</div>
+        <div class="free-box">
+          <div class="free-label">🆓 無料プラン</div>
+          <div class="free-val">全機能・無制限で使えます</div>
+          <div class="free-limit">登録不要・インストール不要</div>
+        </div>
+        <div class="scene-box">
+          <div class="scene-label">こんな場面で活用できます</div>
+          <div class="plan-perks">
+            <div class="perk">病棟会議・経営会議でのシミュレーション</div>
+            <div class="perk">増員・予算交渉の根拠数値として</div>
+            <div class="perk">固定費内訳の可視化で経費削減の検討</div>
+            <div class="perk">目標利益達成に必要な稼働率を逆算</div>
+            <div class="perk">看護管理者研修・勉強会の教材として</div>
+          </div>
+        </div>
+      </div>
+      <div class="pricing-bottom">
+        <div class="qr-canvas-wrap"><div id="qr-byoto"></div></div>
+        <div class="qr-info">
+          <div class="qr-label">QRコードを読み取ってアクセス</div>
+          <a href="https://tacchibanana.github.io/hospital-support-tool-SONEKI/" target="_blank" class="qr-scan-link">
+            <span class="qr-scan-icon">📲</span>
+            <span class="qr-scan-text">今すぐ無料で試す</span>
+            <span class="qr-arrow">→</span>
+          </a>
+          <div class="qr-note">© 2026 TACCHIBANANA</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <strong>病棟損益分岐点アプリ（病棟経営BEPシミュレーター）</strong>　｜　病院経営管理支援ツール　｜　© 2026 TACCHIBANANA
+  <br>本ツールが算出する数値はあくまでシミュレーション値です。実際の経営判断は財務担当者・病院幹部と連携のうえ行ってください。
+</footer>
+
+<script>
+  new QRCode(document.getElementById("qr-byoto"), {
+    text: "https://tacchibanana.github.io/hospital-support-tool-SONEKI/",
+    width: 56, height: 56,
+    colorDark: "#1A2E50", colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+</script>
+</body>
+</html>
