@@ -365,33 +365,28 @@ footer strong { color: rgba(255,255,255,0.7); }
       <div class="fc-list">
         <div class="fc-item">
           <div class="fc-icon">👥</div>
-          <div class="fc-label">人件費（看護師・医師・コメディカル等）</div>
-          <div class="fc-pct">約60〜70%</div>
-        </div>
-        <div class="fc-item">
-          <div class="fc-icon">🏢</div>
-          <div class="fc-label">施設維持費・建物関連費用</div>
-          <div class="fc-pct">約10〜15%</div>
-        </div>
-        <div class="fc-item">
-          <div class="fc-icon">💡</div>
-          <div class="fc-label">光熱費・通信費</div>
-          <div class="fc-pct">約5〜8%</div>
+          <div class="fc-label">医師・看護師人件費</div>
+          <div class="fc-pct">初期値 3,000万</div>
         </div>
         <div class="fc-item">
           <div class="fc-icon">🛒</div>
-          <div class="fc-label">医療機器・消耗品リース料</div>
-          <div class="fc-pct">約5〜8%</div>
+          <div class="fc-label">医療機器リース料</div>
+          <div class="fc-pct">初期値 800万</div>
+        </div>
+        <div class="fc-item">
+          <div class="fc-icon">💡</div>
+          <div class="fc-label">光熱費・その他維持費</div>
+          <div class="fc-pct">初期値 700万</div>
         </div>
         <div class="fc-item">
           <div class="fc-icon">➕</div>
-          <div class="fc-label">その他（独自項目を追加可能）</div>
+          <div class="fc-label">独自の項目（追加・削除できます）</div>
           <div class="fc-pct">カスタム</div>
         </div>
       </div>
       <div class="fc-add-note">
-        ⚙️ボタンから各項目の金額を入力すると合計が自動連動。<br>
-        どの経費が損益分岐点に影響しているかを細かく把握できます。
+        ⚙️ボタンから各項目の金額を入力すると合計が月間固定費に自動で反映されます。<br>
+        変動費（材料費・食費など）は入院収益の15%として計算します。
       </div>
     </div>
   </div>
@@ -425,8 +420,8 @@ footer strong { color: rgba(255,255,255,0.7); }
         <div class="feat purple">
           <div class="feat-icon">💡</div>
           <div>
-            <div class="feat-title">【悠の視点】で経営提案の言語化を支援</div>
-            <div class="feat-desc">算出された数値をどう経営提案に使うかを具体的な言い回しとともに提示。現場管理者の発言力を高めます。</div>
+            <div class="feat-title">【悠の視点】とグラフで提案につなげる</div>
+            <div class="feat-desc">算出結果の下に、数値を「安全のための増員」などの経営提案につなげる考え方を表示。グラフで収益と総費用の交点も確認できます。</div>
           </div>
         </div>
       </div>
@@ -509,17 +504,17 @@ footer strong { color: rgba(255,255,255,0.7); }
             <div class="p-result-row">
               <div class="p-kpi bep">
                 <div class="p-kpi-lbl">📊 損益分岐点 稼働率</div>
-                <div class="p-kpi-val">65.2<span style="font-size:7px;font-family:'BIZ UDPGothic'"> %</span></div>
-                <div class="p-kpi-unit">必要患者：32.6 名/日</div>
+                <div class="p-kpi-val">78.4<span style="font-size:7px;font-family:'BIZ UDPGothic'"> %</span></div>
+                <div class="p-kpi-unit">必要患者：39.2 名/日</div>
               </div>
               <div class="p-kpi tgt">
                 <div class="p-kpi-lbl">🎯 目標利益（10%）達成</div>
-                <div class="p-kpi-val">71.7<span style="font-size:7px;font-family:'BIZ UDPGothic'"> %</span></div>
-                <div class="p-kpi-unit">必要患者：35.9 名/日</div>
+                <div class="p-kpi-val">88.9<span style="font-size:7px;font-family:'BIZ UDPGothic'"> %</span></div>
+                <div class="p-kpi-unit">必要患者：44.4 名/日</div>
               </div>
             </div>
             <div class="p-chart-wrap">
-              <div class="p-chart-lbl">稼働率別 月間収益シミュレーション</div>
+              <div class="p-chart-lbl">稼働率別 収益と総費用（万円）</div>
               <div class="p-bar-row">
                 <div class="p-bar" style="height:10px;background:#B0C0D8;"></div>
                 <div class="p-bar" style="height:18px;background:#B0C0D8;"></div>
@@ -529,14 +524,14 @@ footer strong { color: rgba(255,255,255,0.7); }
                 <div class="p-bar" style="height:40px;background:#6A3A9A;"></div>
               </div>
               <div class="p-bar-lbls">
-                <div class="p-bar-l">50%</div>
+                <div class="p-bar-l">0%</div>
+                <div class="p-bar-l">20%</div>
+                <div class="p-bar-l">40%</div>
                 <div class="p-bar-l">60%</div>
-                <div class="p-bar-l">65%</div>
-                <div class="p-bar-l">72%</div>
                 <div class="p-bar-l">80%</div>
-                <div class="p-bar-l">90%</div>
+                <div class="p-bar-l">100%</div>
               </div>
-              <div class="p-bep-note">▲ BEP：65.2% ／ 目標10%利益達成：71.7%</div>
+              <div class="p-bep-note">▲ BEP：78.4% ／ 目標10%利益達成：88.9%</div>
             </div>
           </div>
         </div>
@@ -547,17 +542,17 @@ footer strong { color: rgba(255,255,255,0.7); }
           <div class="phone-body" style="padding-top:9px;">
             <div class="p-label" style="margin-bottom:5px;">固定費の内訳（月額／万円）</div>
             <div class="p-fc-list">
-              <div class="p-fc-item"><span class="p-fc-lbl">👥 人件費（看護師・医師等）</span><span class="p-fc-val">3,100万</span></div>
-              <div class="p-fc-item"><span class="p-fc-lbl">🏢 施設維持費・建物費用</span><span class="p-fc-val">600万</span></div>
-              <div class="p-fc-item"><span class="p-fc-lbl">💡 光熱費・通信費</span><span class="p-fc-val">400万</span></div>
-              <div class="p-fc-item"><span class="p-fc-lbl">🛒 医療機器・消耗品</span><span class="p-fc-val">400万</span></div>
+              <div class="p-fc-item"><span class="p-fc-lbl">医師・看護師人件費</span><span class="p-fc-val">3,000万</span></div>
+              <div class="p-fc-item"><span class="p-fc-lbl">医療機器リース料</span><span class="p-fc-val">800万</span></div>
+              <div class="p-fc-item"><span class="p-fc-lbl">光熱費・その他維持費</span><span class="p-fc-val">700万</span></div>
+              <div class="p-fc-item"><span class="p-fc-lbl">＋ 項目を追加</span><span class="p-fc-val"></span></div>
             </div>
             <div class="p-fc-total"><span class="p-fc-total-lbl">内訳合計</span><span class="p-fc-total-val">4,500 万円/月</span></div>
             <div style="margin-top:5px;background:#EAF5EE;border-radius:4px;padding:5px 7px;font-size:6.5px;color:#333;border-left:2.5px solid var(--green2);">
               目標利益率設定 <strong style="color:var(--green);">10 %</strong>
             </div>
             <div class="p-hint">
-              <strong>悠の視点：</strong>人件費が固定費の69%を占めています。稼働率を65.2%→71.7%に改善するだけで目標利益を達成。「稼働率+6.5%＝看護師約2名分の人件費捻出」という提案が可能です。
+              <strong>【悠の視点】</strong>「安全のための増員」を求める際、この数値を元に「稼働率をあと○%上げれば人件費を捻出できる」という具体的な経営提案が可能になります。
             </div>
           </div>
         </div>
@@ -565,16 +560,11 @@ footer strong { color: rgba(255,255,255,0.7); }
       </div>
     </div>
 
-    <!-- PRICING -->
+    <!-- HOW TO USE -->
     <div class="pricing-card">
       <div class="pricing-top">
-        <div class="plan-eyebrow">FREE TO USE</div>
-        <div class="plan-name"><span>完全無料</span>で<br>全機能を使える</div>
-        <div class="free-box">
-          <div class="free-label">🆓 無料プラン</div>
-          <div class="free-val">全機能・無制限で使えます</div>
-          <div class="free-limit">登録不要・インストール不要</div>
-        </div>
+        <div class="plan-eyebrow">HOW TO USE</div>
+        <div class="plan-name">インストール不要<br><span>ブラウザで</span>すぐ使える</div>
         <div class="scene-box">
           <div class="scene-label">こんな場面で活用できます</div>
           <div class="plan-perks">
@@ -592,7 +582,7 @@ footer strong { color: rgba(255,255,255,0.7); }
           <div class="qr-label">QRコードを読み取ってアクセス</div>
           <a href="https://tacchibanana.github.io/hospital-support-tool-SONEKI/" target="_blank" class="qr-scan-link">
             <span class="qr-scan-icon">📲</span>
-            <span class="qr-scan-text">今すぐ無料で試す</span>
+            <span class="qr-scan-text">アプリを開く</span>
             <span class="qr-arrow">→</span>
           </a>
           <div class="qr-note">© 2026 TACCHIBANANA</div>
